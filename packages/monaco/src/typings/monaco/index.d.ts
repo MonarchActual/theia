@@ -68,10 +68,20 @@ declare module monaco.editor {
         readonly _contributions: {
             'editor.controller.quickOpenController': monaco.quickOpen.QuickOpenController
             'editor.contrib.referencesController': monaco.referenceSearch.ReferencesController
+            'editor.contrib.hover': ModesHoverController
         }
         readonly _modelData: {
             cursor: ICursor
         } | null;
+    }
+
+    // https://github.com/theia-ide/vscode/blob/standalone/0.19.x/src/vs/editor/contrib/hover/hover.ts#L31
+    export interface ModesHoverController {
+        readonly contentWidget: ModesContentHoverWidget
+    }
+    export interface ModesContentHoverWidget {
+        readonly isVisible: boolean;
+        readonly _domNode: HTMLElement;
     }
 
     // https://github.com/theia-ide/vscode/blob/standalone/0.19.x/src/vs/editor/common/controller/cursor.ts#L169
@@ -730,7 +740,12 @@ declare module monaco.referenceSearch {
         show(range: IRange): void;
         hide(): void;
         focus(): void;
+        _tree: ReferenceTree
     }
+    export interface ReferenceTree {
+        getFocus(): ReferenceTreeElement[]
+    }
+    export interface ReferenceTreeElement { }
 
     // https://github.com/theia-ide/vscode/blob/standalone/0.19.x/src/vs/editor/contrib/gotoSymbol/peek/referencesController.ts#L30
     export interface ReferencesController extends IDisposable {
